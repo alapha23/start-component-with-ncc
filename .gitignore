@@ -6,3 +6,4 @@ node_modules
 
 src/lib
 src/doc
+package-lock.json
