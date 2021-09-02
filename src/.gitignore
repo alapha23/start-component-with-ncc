@@ -1,9 +1,4 @@
 node_modules
 .s
-lib
-doc
-locales
-.ided
-.vscode
 
 package-lock.json
