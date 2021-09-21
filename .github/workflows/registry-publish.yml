@@ -40,7 +40,6 @@ jobs:
         run: |
           wget https://serverless-registry.oss-cn-hangzhou.aliyuncs.com/publish-file/python3/hub-publish.py
           ls
-      - name: Create Release
       - name: Publish package
         env:
           publish_token: ${{ secrets.alibaba_registry_publish_token }}
