@@ -8,18 +8,13 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Get version from publish.yaml
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
         run: |
-          local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
-          sed -ne "s|^\($s\):|\1|" \
-            -e "s|^\($s\)\($w\)$s:$s[\"']\(.*\)[\"']$s\$|\1$fs\2$fs\3|p" \
-            -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p"  $1 |
-          awk -F$fs '{
-            indent = length($1)/2;
-            vname[indent] = $2;
-            for (i in vname) {if (i > indent) {delete vname[i]}}
-            if (length($3) > 0) {
-              vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
-              printf("%s%s%s=\"%s\"\n", "publish.yaml",vn, $2, $3);
-            }
-          }'
+          python -m pip install --upgrade pip
+          pip install shyaml
+      - name: Get version from publish.yaml
+        run: cat publish.yaml | shyaml get-value Version
