@@ -1,0 +1,45 @@
+name: create release
+
+on:
+  push:
+    branches:
+      - dev
+      - staging
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install --user shyaml yq
+          sudo apt-get install jq
+          export PATH="$HOME/.local/bin:$PATH"
+      - name: Get version from publish.yaml
+        id: vars
+        run:
+          echo ::set-output name=version::$(cat publish.yaml | ~/.local/bin/shyaml get-value Version)
+      - name: Version Bump
+        id: bump_vars
+        run: | 
+          version=${{steps.vars.outputs.version}}
+          release=${version##*-}
+          major_minor_patch=${version%-*}
+          major_minor=${major_minor_patch%.*}
+          patch=${major_minor_patch##*.}
+          echo $major_minor.$patch
+          ((patch++))
+          echo $major_minor.$patch
+          yq -y "(.Version|=\"${major_minor}.${patch}\")" ./publish.yaml > ./publish.yaml
+          echo ::set-output name=new_version::$major_minor.$patch
+      - name: Release
+        uses: softprops/action-gh-release@v1        
+        with:
+          tag_name: ${{steps.bump_vars.outputs.new_version}}
+          files: ./*
