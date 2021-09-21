@@ -8,11 +8,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Read publish.yaml
+      - name: Get version from publish.yaml
         uses: juliangruber/read-file-action@v1.1.4
         with:
           path: ./publish.yaml
-      - name: Get version number
         run: |
           local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
           sed -ne "s|^\($s\):|\1|" \
