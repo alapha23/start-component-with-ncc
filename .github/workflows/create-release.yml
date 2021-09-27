@@ -1,10 +1,10 @@
 name: create release
 
 on:
-  pull_request:
+  push:
     branches:
       - dev
-    types: [closed]
+      - staging
 
 jobs:
   deploy:
