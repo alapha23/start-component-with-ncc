@@ -19,7 +19,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install shyaml pyyaml
       - name: Get version from publish.yaml
-        run: cat src/publish.yaml | "yaml get-value Version" >> $GITHUB_ENV
+        run: cat publish.yaml | "shyaml get-value Version" >> $GITHUB_ENV
       - name: Version Bump
         run: python -c "import yaml;version = ${{env.version}}.split('.'); version[2] = str(int(version[2])+1); version = '.'.join(version); f=open('publish.yaml');y=yaml.safe_load(f);y['Version'] = version; print(yaml.dump(y, default_flow_style=False))" > publish.yaml
       - name: Create release
