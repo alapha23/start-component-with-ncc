@@ -2,25 +2,9 @@
 
 ### 开发
 
-
-npm run build
-
-s test
-
-s test --debug
 ````
-
 在功能调试完成后，需要进行发布前的编译，与之前编译不同的是，此时编译是基于 ncc 进行的，而 ncc 编译过程耗时比较久，而且不支持 watch 模式，因此在之前测试时先基于 `tsc` 进行编译。
 
-ncc 编译会将所有源码打包至 `dist/index.js` 中，因此涉及到读取相对路径文件的实现代码，需要进行一定的改造后才能运行成功，例如，如果在 src/utils/utils.ts 中调用了 `fs.readFile(path.join(__dirname, '../../package.json))` ，则在编译前需要将这部分代码更改为 `fs.readFile(path.join(__dirname, '../package.json))`，因为此时的相对路径是相对于 `dist/index.js` 的。
-
-编译完成后也调用 `s cli $(pwd) test` 指令进行测试。
-
-
-```text
-注:
-
-ncc 编译后的产物运行不依赖与 node_modules，因此：
 
 1. build 完成后会将 node_modules 删除，详情可以参考 package.json 中的 postbuild 内容
 2. package.json 中包含 "autoInstall": false，表明在该组件被加载时不会安装依赖
