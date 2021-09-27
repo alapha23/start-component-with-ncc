@@ -4,6 +4,6 @@
 .vscode
 node_modules
 
-src/lib
+src/dist
 src/doc
 package-lock.json
