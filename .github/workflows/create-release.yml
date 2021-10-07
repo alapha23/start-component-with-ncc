@@ -20,9 +20,9 @@ jobs:
           pip install pyyaml yq
           sudo apt-get install jq
           export PATH="$HOME/.local/bin:$PATH"
+          find . -name "publish.yaml"
       - name: Get version from publish.yaml
         run: |
-          find . -name "publish.yaml"
           export $GITHUB_ENV=$(cat publish.yaml | shyaml get-value Version)
       - name: Version Bump
         run: 
