@@ -29,9 +29,9 @@ jobs:
           major_minor_patch=${version%-*}
           major_minor=${major_minor_patch%.*}
           patch=${major_minor_patch##*.}
-          echo $major_minor.$patch # old version
+          echo $major_minor.$patch
           ((patch++))
-          echo $major_minor.$patch # new version
+          echo $major_minor.$patch
           ls
           yq -y "(.Version|=\"${major_minor}.${patch}\")" app/start-component-with-ncc/src/publish.yaml
       - name: Create release
