@@ -26,6 +26,7 @@ jobs:
         run:
           echo ::set-output name=version::$(cat publish.yaml | ~/.local/bin/shyaml get-value Version)
       - name: Version Bump
+        id: bump_vars
         run: | 
           version=${{steps.vars.outputs.version}}
           release=${version##*-}
@@ -36,6 +37,9 @@ jobs:
           ((patch++))
           echo $major_minor.$patch
           yq -y "(.Version|=\"${major_minor}.${patch}\")" ./src/publish.yaml > ./src/publish.yaml
+          echo ::set-output name=new_version::$major_minor.$patch
       - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1        
+        with:
+          tag_name: ${{steps.bump_vars.outputs.new_version}}
+          files: src
