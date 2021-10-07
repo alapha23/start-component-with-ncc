@@ -21,7 +21,9 @@ jobs:
           sudo apt-get install jq
           export PATH="$HOME/.local/bin:$PATH"
       - name: Get version from publish.yaml
-        run: export $GITHUB_ENV=$(cat publish.yaml | shyaml get-value Version)
+        run: |
+          find . -name "publish.yaml"
+          export $GITHUB_ENV=$(cat publish.yaml | shyaml get-value Version)
       - name: Version Bump
         run: 
           version=$GITHUB_ENV
