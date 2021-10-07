@@ -29,7 +29,7 @@ jobs:
           echo ::set-output name=version::$(cat publish.yaml | ~/.local/bin/shyaml get-value Version)
       - name: Version Bump
         run: | 
-          version=${{step.vars.outputs.version}}
+          version=${{steps.vars.outputs.version}}
           release=${version##*-}
           major_minor_patch=${version%-*}
           major_minor=${major_minor_patch%.*}
