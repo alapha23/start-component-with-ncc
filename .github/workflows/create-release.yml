@@ -7,8 +7,10 @@ on:
       - staging
 
 jobs:
-  deploy:
+  release:
     runs-on: ubuntu-latest
+    env:
+        working-directory: ./src
     steps:
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -20,7 +22,6 @@ jobs:
           pip install pyyaml yq
           sudo apt-get install jq
           export PATH="$HOME/.local/bin:$PATH"
-          find . -name "publish.yaml"
       - name: Get version from publish.yaml
         run: |
           export $GITHUB_ENV=$(cat publish.yaml | shyaml get-value Version)
