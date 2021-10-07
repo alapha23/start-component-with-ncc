@@ -24,7 +24,6 @@ jobs:
           export PATH="$HOME/.local/bin:$PATH"
       - name: debug
         run: ls -al
-        working-directory: ${{env.working-directory}}
       - name: Get version from publish.yaml
         run:
           export $GITHUB_ENV=$(cat publish.yaml | ~/.local/bin/shyaml get-value Version)
