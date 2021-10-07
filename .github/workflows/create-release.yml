@@ -11,8 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          ref: dev
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -37,12 +35,7 @@ jobs:
           echo $major_minor.$patch
           ((patch++))
           echo $major_minor.$patch
-          yq -y "(.Version|=\"${major_minor}.${patch}\")" ./src/publish.yaml
-      - name: Create release
-        uses: actions/create-release@latest
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: ''
-          draft: false
-          prerelease: false
+          yq -y "(.Version|=\"${major_minor}.${patch}\")" ./src/publish.yaml > ./src/publish.yaml
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
