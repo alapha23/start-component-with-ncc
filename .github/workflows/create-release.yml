@@ -16,14 +16,24 @@ jobs:
           python-version: '3.x'
       - name: Install dependencies
         run: |
-          sudo apt-get install jq
           python -m pip install --upgrade pip
-          pip install yq pyyaml
+          pip install pyyaml yq
+          sudo apt-get install jq
           export PATH="$HOME/.local/bin:$PATH"
       - name: Get version from publish.yaml
-        run: yq -r .Version app/src/publish.yaml >> $GITHUB_ENV
+        run: export $GITHUB_ENV=$(cat publish.yaml | shyaml get-value Version)
       - name: Version Bump
-        run: python -c "import yaml;version = ${{env.version}}.split('.'); version[2] = str(int(version[2])+1); version = '.'.join(version); f=open('publish.yaml');y=yaml.safe_load(f);y['Version'] = version; print(yaml.dump(y, default_flow_style=False))" > publish.yaml
+        run: 
+          version=$GITHUB_ENV
+          release=${version##*-}
+          major_minor_patch=${version%-*}
+          major_minor=${major_minor_patch%.*}
+          patch=${major_minor_patch##*.}
+          echo $major_minor.$patch # old version
+          ((patch++))
+          echo $major_minor.$patch # new version
+          ls
+          yq -y "(.Version|=\"${major_minor}.${patch}\")" app/start-component-with-ncc/src/publish.yaml
       - name: Create release
         uses: actions/create-release@latest
         with:
