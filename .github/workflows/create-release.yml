@@ -24,11 +24,12 @@ jobs:
           sudo apt-get install jq
           export PATH="$HOME/.local/bin:$PATH"
       - name: Get version from publish.yaml
+        id: vars
         run:
-          export $GITHUB_ENV=$(cat publish.yaml | ~/.local/bin/shyaml get-value Version)
+          echo ::set-output name=version::$(cat publish.yaml | ~/.local/bin/shyaml get-value Version)
       - name: Version Bump
         run: | 
-          version=$GITHUB_ENV
+          version=${{step.vars.outputs.version}}
           release=${version##*-}
           major_minor_patch=${version%-*}
           major_minor=${major_minor_patch%.*}
