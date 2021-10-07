@@ -9,8 +9,6 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    env:
-        working-directory: ./src
     steps:
       - uses: actions/checkout@v2
         with:
@@ -22,15 +20,12 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install --user pyyaml yq
+          pip install --user shyaml yq
           sudo apt-get install jq
           export PATH="$HOME/.local/bin:$PATH"
-      - name: debug
-        run: ls -al
       - name: Get version from publish.yaml
         run:
           export $GITHUB_ENV=$(cat publish.yaml | ~/.local/bin/shyaml get-value Version)
-        working-directory: ${{env.working-directory}}
       - name: Version Bump
         run: | 
           version=$GITHUB_ENV
